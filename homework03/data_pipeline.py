@@ -5,6 +5,7 @@ import tensorflow as tf
 from tensorflow.keras import layers
 import numpy as np
 import matplotlib.pyplot as plt
+from tensorflow.keras.models import Model
 
 # Load CIFAR-10 dataset
 (ds_train, ds_test), ds_info = tfds.load('cifar10', split=['train', 'test'], as_supervised=True, with_info=True)
@@ -33,7 +34,24 @@ def data_pipeline(input):
 train_dataset = data_pipeline(ds_train)
 test_dataset = data_pipeline(ds_test)
 
-class_names = [
-    'airplane', 'automobile', 'bird', 'cat', 'deer',
-    'dog', 'frog', 'horse', 'ship', 'truck'
-]
+
+# Plot the dataset
+def plot_dataset(dataset, num_images=9):
+    # Take a single batch from the dataset
+    for images, labels in dataset.take(1):
+        plt.figure(figsize=(10, 10))
+        for i in range(num_images):
+            # Reshape the image to 32x32x3
+            img = images[i].numpy().reshape(32, 32, 3)
+            # Rescale the image back to the range [0, 1] for visualization
+            img = (img + 1) / 2
+            plt.subplot(3, 3, i + 1)
+            plt.imshow(img, cmap='gray')
+            plt.title("Label: {}".format(labels[i]))
+            plt.axis('off')
+        plt.show()
+
+# Assuming we already define everything
+plot_dataset(train_dataset)
+
+
